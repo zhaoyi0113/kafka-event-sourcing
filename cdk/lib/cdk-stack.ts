@@ -1,4 +1,4 @@
-import { Stack, StackProps, CfnOutput } from 'aws-cdk-lib';
+import { Stack, StackProps, CfnOutput, Tags } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
@@ -10,9 +10,12 @@ export class CdkStack extends Stack {
 
     const lambdaPath = path.join(__dirname, '../../');
 
+    Tags.of(this).add('COMPONENT_NAME', 'test');
+    Tags.of(this).add('STAGE', 'dev');
+
     const fn = new lambda.Function(this, 'streamHandler', {
       runtime: lambda.Runtime.GO_1_X,
-      handler: 'index.handler',
+      handler: 'main',
       code: lambda.Code.fromAsset(lambdaPath, {
         bundling: {
           image: lambda.Runtime.GO_1_X.bundlingImage,
@@ -25,7 +28,7 @@ export class CdkStack extends Stack {
           command: [
             'bash', '-c', [
               'ls',
-              'go build',
+              'make build',
             ].join(' && ')
           ]
         },
