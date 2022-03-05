@@ -1,4 +1,4 @@
-package streamHandler
+package stream
 
 import (
 	"context"
